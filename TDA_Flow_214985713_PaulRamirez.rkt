@@ -57,11 +57,11 @@
 
 
 ; Nombre de la funcion: check-dup-flow
-; Dominio: list X option
-; Recorrido: list
+; Dominio: lista de opciones X option
+; Recorrido: lista de opciones
 ; Recursión: ninguna
 ; Descripción: Esta funcion revisa si es que el id de la opcion a agregar ya esta contenida
-;              en la lista de opciones. Si es que el id ya esta, no se agrega nada y retorna la original, 
+;              en la lista de id. Si es que el id ya esta, no se agrega nada y retorna la original, 
 ;              si no estaba, se agrega la opcion a la lista y se retorna.
 (define check-dup-flow (lambda (option-list option)
                          (if (member (option-get-id option) (map option-get-id option-list))

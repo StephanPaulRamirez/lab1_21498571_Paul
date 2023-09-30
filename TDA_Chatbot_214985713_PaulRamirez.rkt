@@ -62,7 +62,7 @@
 (define chatbot-get-id car)
 
 
-; Nombre de la funcion: chatbot-get-msg
+; Nombre de la funcion: chatbot-get-name
 ; Dominio: chatbot
 ; Recorrido: string
 ; Recursión: ninguna

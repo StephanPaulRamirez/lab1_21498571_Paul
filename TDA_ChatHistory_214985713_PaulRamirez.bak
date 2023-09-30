@@ -1,0 +1,26 @@
+#lang racket
+
+;Provee cada una de las definiciones al archivo que lo requiera
+(provide (all-defined-out))
+;Incluimos TDAs implementados, funciones de utilidad y definiciones de prueba
+(require "TDA_User_214985713_PaulRamirez.rkt")
+
+; TDA ChatHistory
+; especificación
+
+; ChatHistory(user)
+; construir ChatHistory
+
+; implementacion
+
+; representacion 
+; user
+
+; Constructor:
+; Nombre de la funcion: ChatHistory
+; Dominio: user
+; Recorrido: ChatHistory
+; Recursión: ninguna
+; Descripción: Esta Funcion recibe un usuario y lo enlista con una lista vacia en donde se agregaran
+; las interacciones.
+(define ChatHistory (lambda (user) (list user (list))))
