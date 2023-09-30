@@ -187,5 +187,3 @@
                      (chatbot-get-msg chatbot) (chatbot-get-startFlowId chatbot)
                      (chatbot-remove-dup (chatbot-get-flows chatbot)
                                          (map flow-get-id (chatbot-get-flows chatbot)) (list flow)))))
-;queda pendiente usar el constructor en vez de enlistar para reducir dependecia de listas
-; (aplica para flow igual)
