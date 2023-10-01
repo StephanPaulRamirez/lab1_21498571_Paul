@@ -125,9 +125,9 @@
 
 ; Nombre de la funcion: system-get-loggeduser
 ; Dominio: system
-; Recorrido: lista con un string
+; Recorrido: lista con un user
 ; Recursión: ninguna
-; Descripción: Esta funcion compone car con system-get-fourth para obtener el usuario logeado.
+; Descripción: Esta funcion compone cadr con system-get-fourth para obtener el usuario logeado.
 (define system-get-loggeduser (lambda (system) (cadr (system-get-fourth system))))
 
 ; Nombre de la funcion: system-add-chatbot
@@ -141,10 +141,31 @@
                          (list (system-get-name system) (system-get-initalchatbotid system)
                                (check-dup-system (system-get-chatbotlist system) chatbot) (system-get-fourth system))))
 
+; Nombre de la funcion: system-add-user
+; Dominio: system X user
+; Recorrido: system
+; Recursión: ninguna
+; Descripción: Esta funcion crea un nuevo system con los 3 primeros elementos del system con la lista
+; de chattHistory's con el usuario nuevo si es que este ya no estaba, esto se verifica usando member
+; con el usuario nuevo y la lista de usuarios obtenida con system-get-user-list, en el caso contrario
+; (ya existia el nombre de usuario) se retorna el system original.
 (define system-add-user (lambda (system User)
                           (if (member (user User) (system-get-userlist system))
                               system
                               (list (system-get-name system) (system-get-initalchatbotid system)
                                       (system-get-chatbotlist system)
                                       (list (cons (chatHistory User) (system-get-chatHistorylist system)) (list))))))
+
+(define system-login (lambda (system User)
+                       (if (and (equal? (system-get-loggeduser system) (list)) (member User (system-get-userlist system)))
+                           (list (system-get-name system) (system-get-initalchatbotid system)
+                                      (system-get-chatbotlist system)
+                                      (list (system-get-chatHistorylist system) (list (user User))))
+                           system)))
+
+(define system-logout (lambda (system)
+                           (list (system-get-name system) (system-get-initalchatbotid system)
+                                      (system-get-chatbotlist system)
+                                      (list (system-get-chatHistorylist system) (list)))))
+
                           
