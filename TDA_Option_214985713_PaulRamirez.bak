@@ -7,8 +7,11 @@
 ; especificación
 
 ; option(code message ChatbotCodeLink InitialFlowCodeLink Keyword*)
-; construir option
-; obtener id
+; option
+; option-get-id
+; option-get-chatbotcodelink
+; option-get-initialflowcodelink
+; option-get-keywords
 
 ; implementacion
 
@@ -36,3 +39,24 @@
 ; Recursión: ninguna
 ; Descripción: Esta funcion es sinonimo de car para obtener el primer elemento de option.
 (define option-get-id car)
+
+; Nombre de la funcion: option-get-chatbotcodelink
+; Dominio: option
+; Recorrido: int
+; Recursión: ninguna
+; Descripción: Esta funcion es sinonimo de caddr para obtener el tercer elemento de option.
+(define option-get-chatbotcodelink caddr)
+
+; Nombre de la funcion: option-get-initialflowcodelink
+; Dominio: option
+; Recorrido: int
+; Recursión: ninguna
+; Descripción: Esta funcion es sinonimo de cadddr para obtener el cuarto elemento de option.
+(define option-get-initialflowcodelink cadddr)
+
+; Nombre de la funcion: option-get-keywords
+; Dominio: option
+; Recorrido: lista de strings
+; Recursión: ninguna
+; Descripción: Esta funcion es sinonimo de last para obtener las keywords.
+(define option-get-keywords last)

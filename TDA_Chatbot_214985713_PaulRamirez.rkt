@@ -9,13 +9,13 @@
 ; especificación
 
 ; chatbot(chatbotID name welcomeMessage startFlowId flows*)
-; construir chatbot
-; obtener id
-; obtener nombre
-; obtener mensaje
-; obtener id flow inicial
-; obtener flujos
-; añadir flujo
+; chatbot
+; chatbot-get-id
+; chatbot-get-name
+; chatbot-get-msg
+; chatbot-get-startFlowId
+; chatbot-get-flows
+; chatbot-add-flow
 
 ; implementacion
 

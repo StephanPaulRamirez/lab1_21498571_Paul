@@ -1,3 +1,0 @@
-#lang racket
-
-(require "TDA_Chatbot_214985713_PaulRamirez.rkt")

@@ -9,11 +9,11 @@
 ; especificación
 
 ; flow(id name-msg Option*)
-; construir flow
-; obtener id
-; obtener mensaje
-; obtener options
-; añadir opcion
+; flow
+; flow-get-id
+; flow-get-msg
+; flow-get-options
+; flow-add-options
 
 ; implementacion
 

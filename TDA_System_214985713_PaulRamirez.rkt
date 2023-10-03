@@ -12,17 +12,19 @@
 ; especificación
 
 ; System(nombre InitialChatbotCodeLink chatbot*)
-; construir system
-; obtener nombre
-; obtener chatbot inicial
-; obtener lista de chatbots
-; obtener lista chathistory
-; obtener usuarios registrados
-; obtener usuario logeado
-; añadir chatbot
-; añadir usuario
-; login usuario
-; logout usuario
+; system
+; system-get-name
+; system-get-initialchatbotid
+; system-get-chabotlist
+; system-get-fourth
+; system-get-chatHistorylist
+; system-get-userlist
+; system-get-loggeduser
+; system-get-actual
+; system-add-chatbot
+; system-add-user
+; system-login
+; system-logout
 
 ; implementacion
 
@@ -87,7 +89,7 @@
 (define system-get-name car)
 
 
-; Nombre de la funcion: system-get-initalchatbotid
+; Nombre de la funcion: system-get-initialchatbotid
 ; Dominio: system
 ; Recorrido: int
 ; Recursión: ninguna
@@ -135,8 +137,10 @@
 ; Dominio: system
 ; Recorrido: lista con un user
 ; Recursión: ninguna
-; Descripción: Esta funcion usa Last para obtener el chatbot actual.
+; Descripción: Esta funcion usa Last para obtener las la ultima interaccion de talk.
 (define system-get-actual (lambda (system) (last system)))
+
+; Modificadores
 
 ; Nombre de la funcion: system-add-chatbot
 ; Dominio: system X chatbot
@@ -163,7 +167,7 @@
                               system
                               (list (system-get-name system) (system-get-initialchatbotid system)
                                     (system-get-chatbotlist system)
-                                    (list (cons (chatHistory User) (system-get-chatHistorylist system)) (list))
+                                    (list (cons (chatHistory User "") (system-get-chatHistorylist system)) (list))
                                     (system-get-actual system)))))
 
 ; Nombre de la funcion: system-login
@@ -174,7 +178,7 @@
 ; si lo esta y no hay ninguna sesion iniciada, este inicia sesion quedando su nombre guardado
 ; en el apartado de usuario logeado, caso contrario no se hace nada y se retorna el original.
 (define system-login (lambda (system User)
-                       (if (and (equal? (system-get-loggeduser system) (list)) (member User (system-get-userlist system)))
+                       (if (and (null? (system-get-loggeduser system)) (member User (system-get-userlist system)))
                            (list (system-get-name system) (system-get-initialchatbotid system)
                                  (system-get-chatbotlist system)
                                  (list (system-get-chatHistorylist system) (list (user User))) (system-get-actual system))
@@ -191,39 +195,101 @@
                               (system-get-chatbotlist system)
                               (list (system-get-chatHistorylist system) (list)) (system-get-actual system))))
 
-(define system-get-chatbot (lambda (system id)
+; Nombre de la funcion: system-search-chatbot
+; Dominio: system X int
+; Recorrido: chatbot
+; Recursión: Cola
+; Descripción: Esta funcion recibe un system y busca un chatbot en este, a partir del id entregado.
+(define system-search-chatbot (lambda (system id)
                              (define system-buscar-chatbot-id (lambda (listachatbot id)
                                                                 (if (= (chatbot-get-id (car listachatbot)) id)
                                                                     (car listachatbot)
                                                                     (system-buscar-chatbot-id (cdr listachatbot) id))))
                              (system-buscar-chatbot-id (system-get-chatbotlist system) id)))
 
-(define system-get-flow (lambda (chatbot id)
+; Nombre de la funcion: system-search-flow
+; Dominio: chatbot X int
+; Recorrido: flow
+; Recursión: Cola
+; Descripción: Esta funcion recibe un chatbot y busca un flow en este, a partir del id entregado.
+(define system-search-flow (lambda (chatbot id)
                           (define system-buscar-flow-id (lambda (listaflow id)
                                                           (if (= (flow-get-id (car listaflow)) id)
                                                               (car listaflow)
                                                               (system-buscar-flow-id (cdr listaflow) id))))
                           (system-buscar-flow-id (chatbot-get-flows chatbot) id)))
 
-
-(define system-get-option (lambda (listaoptions keyword)
+; Nombre de la funcion: system-search-option
+; Dominio: lista de opciones X string
+; Recorrido: option
+; Recursión: Cola
+; Descripción: Esta funcion recibe una lista de opciones y busca un option en este, a partir de una keyword.
+(define system-search-option (lambda (listaoptions keyword)
                             (if (or (equal? (string->number keyword) (option-get-id (car listaoptions))) (member keyword (map string-downcase (option-get-keywords (car listaoptions)))))
                                 (car listaoptions)
-                                (system-get-option (cdr listaoptions) keyword))))
+                                (system-search-option (cdr listaoptions) keyword))))
 
-(define system-get-coord (lambda (system message)
-                           (system-get-option (flow-get-options (system-get-flow (system-get-chatbot system (car (system-get-actual system)))
-                                                                                 (cadr (system-get-actual system))))
-                                              message)))
+; Nombre de la funcion: system-search-coord
+; Dominio: system X sring
+; Recorrido: option
+; Recursión: ninguna
+; Descripción: Esta funcion recibe un system y busca un option en este, a partir de una keyword, dependiendo de la ultima interaccion
+; para saber cual es el chatbot y flujo actual de la conversacion.
+(define system-search-coord (lambda (system message)
+                              (system-search-option (flow-get-options (system-search-flow (system-search-chatbot system (car (system-get-actual system)))
+                                                                                          (cadr (system-get-actual system))))
+                                                    message)))
 
+(define system-get-options-msg (lambda (flow)
+  (define get-msg (lambda (result optionlist)
+                    (if (null? optionlist)
+                        result
+                        (get-msg (string-append result "\n" (option-get-msg (car optionlist))) (cdr optionlist)))))
+  (get-msg "\n" (flow-get-options flow))))
+
+(define system-update-history (lambda (system message)
+                                (define search-user (lambda (listachatHistory user)
+                                                      (if (member (chatHistory-get-user (car listachatHistory)) user)
+                                                          (car listachatHistory)
+                                                          (search-user (cdr listachatHistory) user))))
+                                (define notuser (lambda (chathistory)
+                                                  (not (equal? (first (system-get-loggeduser system)) (first chathistory)))))
+                                                      
+                                (if (null? (system-get-actual system))
+                                    (cons (cons (chatHistory (first (system-get-loggeduser system)) (string-append (chatHistory-get-register (search-user (system-get-chatHistorylist system) (system-get-loggeduser system)))
+                                                                                                                   (string-append "\n" (number->string (current-seconds)) " - " (first (system-get-loggeduser system)) ": " message "\n"
+                                                                                                                                  (number->string (current-seconds)) " - " (chatbot-get-name (system-search-chatbot  system (system-get-initialchatbotid system)))
+                                                                                                                                  ": " (flow-get-msg (system-search-flow (system-search-chatbot system (system-get-initialchatbotid system))
+                                                                                                                                                                         (chatbot-get-startFlowId (system-search-chatbot system (system-get-initialchatbotid system)))))
+                                                                                                                                  (system-get-options-msg (system-search-flow (system-search-chatbot system (system-get-initialchatbotid system))
+                                                                                                                                                                              (chatbot-get-startFlowId (system-search-chatbot system (system-get-initialchatbotid system))))))
+                                                                                                                   )
+                                                             ) (filter notuser (system-get-chatHistorylist system))) (list (system-get-loggeduser system)))
+                                    (cons (cons (chatHistory (first (system-get-loggeduser system)) (string-append (chatHistory-get-register (search-user (system-get-chatHistorylist system) (system-get-loggeduser system)))
+                                                                                                                   (let ([opt (system-search-coord system (string-downcase message))])
+                                                                                                                     (string-append "\n" (number->string (current-seconds)) " - " (first (system-get-loggeduser system)) ": " message "\n"
+                                                                                                                                    (number->string (current-seconds)) " - " (chatbot-get-name (system-search-chatbot system (option-get-chatbotcodelink opt)))
+                                                                                                                                    ": " (flow-get-msg (system-search-flow (system-search-chatbot system (option-get-chatbotcodelink opt))
+                                                                                                                                                                           (option-get-initialflowcodelink opt)))
+                                                                                                                                    (system-get-options-msg (system-search-flow (system-search-chatbot system (option-get-chatbotcodelink opt))
+                                                                                                                                                                                (option-get-initialflowcodelink opt))))))
+                                                             )
+                                                (filter notuser (system-get-chatHistorylist system))) (list (system-get-loggeduser system))))))
+                                                   
+
+                                                            
 (define system-talk-rec(lambda (system message)
-                         (if (equal? (system-get-actual system) (list))
-                             (list (system-get-name system) (system-get-initialchatbotid system)
-                                   (system-get-chatbotlist system)
-                                   (system-get-fourth system)
-                                   (list (system-get-initialchatbotid system)
-                                         (chatbot-get-startFlowId (system-get-chatbot system (system-get-initialchatbotid system))) message))
-                             (list (system-get-name system) (system-get-initialchatbotid system)
-                                   (system-get-chatbotlist system)
-                                   (system-get-fourth system) (list (option-get-chatbotcodelink (system-get-coord system (string-downcase message)))
-                                                                    (option-get-initialflowcodelink (system-get-coord system (string-downcase message))) message)))))
+                         (if (null? (system-get-loggeduser system))
+                             system
+                             (if (null? (system-get-actual system))
+                                 (list (system-get-name system) (system-get-initialchatbotid system)
+                                       (system-get-chatbotlist system)
+                                       (system-update-history system message)
+                                       (list (system-get-initialchatbotid system)
+                                             (chatbot-get-startFlowId (system-search-chatbot system (system-get-initialchatbotid system))) message))
+                                 (list (system-get-name system) (system-get-initialchatbotid system)
+                                       (system-get-chatbotlist system)
+                                       (system-update-history system message)
+                                       (list (option-get-chatbotcodelink (system-search-coord system (string-downcase message)))
+                                                                        (option-get-initialflowcodelink (system-search-coord system (string-downcase message)))
+                                                                        message))))))

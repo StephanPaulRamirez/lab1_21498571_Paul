@@ -7,7 +7,7 @@
 ; especificación
 
 ; user(nombre)
-; construir usuario
+; User
 
 ; implementacion
 

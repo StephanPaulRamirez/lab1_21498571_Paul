@@ -9,9 +9,9 @@
 ; especificación
 
 ; chatHistory(user)
-; construir ChatHistory
-; obtener usuario
-; obtener registro
+; chatHistory
+; chatHistory-get-user
+; chatHistory-get-register
 
 ; implementacion
 
@@ -24,9 +24,9 @@
 ; Dominio: user
 ; Recorrido: chatHistory
 ; Recursión: ninguna
-; Descripción: Esta Funcion recibe un usuario y lo enlista con una lista vacia en donde se agregaran
+; Descripción: Esta Funcion recibe un usuario y un string y los enlista.
 ; las interacciones.
-(define chatHistory (lambda (user) (list user (list))))
+(define chatHistory (lambda (user string) (list user string)))
 
 ; Selectores:
 
