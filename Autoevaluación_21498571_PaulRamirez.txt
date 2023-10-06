@@ -1,0 +1,108 @@
+Requerimientos Funcionales
+
+-TDAs (1/1):
+Se crean los TDA necesarios para la representacion, asociando funciones
+correspondientes. Indicando en cada uno; representacion, 
+constructores, selectores y modificadores asociados de manera ordenada
+y en forma de comentario. Se crearon sinonimos de funciones de listas
+para cada Tda con el fin de independizarlos de la estructura de listas.
+No se guardaron las keywords con string-downcase, sin emnargo este problema
+se soluciona comparando keywords con esta funcion en talk-rec, por lo cual
+en la implementacion de option no se ve necesario incorporarlo.
+
+-TDA Option - constructor (option) (1/1):
+Implementado correctamente, se usa una estructura basada en listas,
+incorporando un id unico en la misma, que luego se verifica la 
+unicidad de la misma en la funcion flow.
+
+-TDA Flow - constructor (flow) (1/1):
+Implementado correctamente, se usa una estructura basada en listas,
+incorporando un id unico en la misma, que luego se verifica la 
+unicidad de la misma en la funcion chatbot y respetando el dominio
+solicitado. Luego esta funcion verifica correctamente la unicidad
+de los id de los option incorporados con una funcion recursiva de cola.
+
+-TDA Flow - modificador (flow-add-option) (1/1):
+No se usa recursion y se añade correctamente un option al flow
+verificando la unicidad de id con una funcion que usa map y member
+de manera declarativa.
+
+-TDA chatbot - constructor (chatbot) (1/1):
+Implementado correctamente, se usa una estructura basada en listas,
+incorporando un id unico en la misma, que luego se verifica la 
+unicidad de la misma en la funcion system, luego esta funcion
+verifica el id de los flow a traves de una que usa recursion de cola.
+
+-TDA chatbot - modificador (chatbot-add-flow) (1/1):
+Se usa recursion de cola a traves de la misma usada en chatbot
+pero con los parametros correspondientes, verificando correctamente
+la unicidad de los id de los flow.
+
+-TDA system - constructor (system) (1/1):
+Implementado correctamente, se usa una estructura basada en listas,
+y verifica la unicidad de los chatbot a traves de otra funcion
+que usa recursion de cola, luego se añadio un apartado para
+los chatHistory que almacena el usuario y su historial, el cual
+se guarda a traves de la funcion system-talk-rec, que formatea
+los strings para ser visualizados con la funcion display, incluyendo
+fecha y emisor. De manera adicional, se le añadio a esta estructura
+un apartado con el usuario logeado y otro con la ultima interaccion
+para facilitar la implementacion de system-talk-rec.
+
+-TDA system - modificador (system-add-chatbot) (1/1):
+No se usa recursividad y se verifica unicidad de id del chatbot
+añadido con otra funcion que actua de manera similar al 
+añadir option de flow.
+
+-TDA system - modificador (system-add-user) (1/1):
+Verifica correctemente si el usuario añadido
+se encuentra ya en el sistema usando member
+y comparando con la lista de usuarios registrados.
+
+-TDA system (system-login) (1/1):
+Verifica correctamente si el usuario ya esta registrado en la 
+lista de usuarios de manera similar a add user y verifica
+tambien que no haya una sesion iniciada por otro usuario,
+comprobando el apartado de usuario logeado.
+
+-TDA system (system-logout) (1/1):
+Cierra la sesion abierta quitando el usuario logeado
+del apartado mismo, dejandolo libre para que se inicie
+sesion por el mismo u otro usuario.
+
+- main (system-talk-rec) (0.75/1):
+Usa recursividad a traves de distintas funciones hechas
+para buscar el chatbot, flow y option asociado
+al mensaje enviado por el usuario, o para buscar
+el flow inicial si es que no habia una interaccion anterior.
+Tambien si es que no hay una sesion abierta, no hace nada.
+Sin embargo si es que se interactua con el chatbot
+sin ser la primera vez del usuario y anteriormente
+hubo otro usuario interactuando, este tiene que seguir
+esa conversacion, solo se reinicia la conversacion si el
+usuario es nuevo.
+
+- main system-talk-norec (0/1):
+No implementada
+
+- main system-synthesis (0/1):
+No implementada
+
+- main system-simulate (0/1):
+No implementada
+
+Requerimientos No Funcionales
+
+- Documentacion (1/1):
+Se documentaron todas las funciones, indicando nombre, dominio,
+recorrido, tipo de recursion y descripcion.
+
+- Organizacion (1/1):
+Se separaron los TDA en archivos independientes y se creo un
+archivo main para implementar la funcion system-talk-rec, 
+junto con todas las funciones necesarias que no correspondan a los TDA
+importados para la operacion correcta de este en ese archivo.
+
+- Historial (1/1):
+Se hicieron mas de 10 commits en un periodo incluso mayor a 2 semanas,
+de manera constante y con aportes claros.

@@ -2,11 +2,11 @@
 
 ;Provee cada una de las definiciones al archivo que lo requiera
 (provide (all-defined-out))
-(require "TDA_Chatbot_214985713_PaulRamirez.rkt")
-(require "TDA_ChatHistory_214985713_PaulRamirez.rkt")
-(require "TDA_User_214985713_PaulRamirez.rkt")
-(require "TDA_Flow_214985713_PaulRamirez.rkt")
-(require "TDA_Option_214985713_PaulRamirez.rkt")
+(require "TDAChatbot_21498571_PaulRamirez.rkt")
+(require "TDAChatHistory_21498571_PaulRamirez.rkt")
+(require "TDAUser_21498571_PaulRamirez.rkt")
+(require "TDAFlow_21498571_PaulRamirez.rkt")
+(require "TDAOption_21498571_PaulRamirez.rkt")
 
 ; TDA System
 ; especificación
@@ -63,7 +63,7 @@
 ; procesados con system-remove-dup-envoltorio para descartar duplicados y crea la lista de chathistory's
 ; con el fin de registrar cada interaccion de cada usuario con su usuario (una lista que al principio
 ; contiene dos listas, para que en una vacia se agregen los registros, y en la otra el usuario logeado
-; que al principio es una lista vacia tambien, junto con una ultima que indica el chatbot actual.
+; que al principio es una lista vacia tambien, junto con una ultima que indica el chatbot y flow actual.
 (define system (lambda (nombre InitialChatbotCodeLink . chatbot)
                  (list nombre InitialChatbotCodeLink (system-remove-dup-envoltorio chatbot) (list (list) (list)) (list))))
 
@@ -85,7 +85,7 @@
 ; Dominio: system
 ; Recorrido: string
 ; Recursión: ninguna
-; Descripción: Esta funcion es sinonimo de caddr para obtener el primer elemento de system.
+; Descripción: Esta funcion es sinonimo de car para obtener el primer elemento de system.
 (define system-get-name car)
 
 
@@ -93,7 +93,7 @@
 ; Dominio: system
 ; Recorrido: int
 ; Recursión: ninguna
-; Descripción: Esta funcion es sinonimo de caddr para obtener el segundo elemento de system.
+; Descripción: Esta funcion es sinonimo de cadr para obtener el segundo elemento de system.
 (define system-get-initialchatbotid cadr)
 
 ; Nombre de la funcion: system-get-chatbotlist
@@ -123,7 +123,7 @@
 ; Dominio: system
 ; Recorrido: lista de user's
 ; Recursión: ninguna
-; Descripción: Esta funcion compone systemchathistory list con map y caadr.
+; Descripción: Esta funcion compone systemchathistory list con map y car.
 (define system-get-userlist (lambda (system)(map car (system-get-chatHistorylist system))))
 
 ; Nombre de la funcion: system-get-loggeduser
@@ -135,9 +135,9 @@
 
 ; Nombre de la funcion: system-get-actual
 ; Dominio: system
-; Recorrido: lista con un user
+; Recorrido: lista de 2 enteros y un string
 ; Recursión: ninguna
-; Descripción: Esta funcion usa Last para obtener las la ultima interaccion de talk.
+; Descripción: Esta funcion usa Last para obtener la ultima interaccion de talk.
 (define system-get-actual (lambda (system) (last system)))
 
 ; Modificadores
@@ -146,7 +146,7 @@
 ; Dominio: system X chatbot
 ; Recorrido: system
 ; Recursión: ninguna
-; Descripción: Esta funcion crea un nuevo system con los 2 primeros elementos del system y la lista de
+; Descripción: Esta funcion reconstruye el system, pero procesa la lista de
 ;              chatbots con el chatbot nuevo, la cual se procesa con la funcion "check-dup-system", para revisar
 ;              si efectivamente se agrega el chatbot o no (se verifican id duplicados).
 (define system-add-chatbot (lambda (system chatbot)
@@ -167,8 +167,10 @@
                               system
                               (list (system-get-name system) (system-get-initialchatbotid system)
                                     (system-get-chatbotlist system)
-                                    (list (cons (chatHistory User) (system-get-chatHistorylist system)) (list))
+                                    (list (cons (chatHistory User "") (system-get-chatHistorylist system)) (list))
                                     (system-get-actual system)))))
+
+; Otros
 
 ; Nombre de la funcion: system-login
 ; Dominio: system X user
@@ -178,7 +180,7 @@
 ; si lo esta y no hay ninguna sesion iniciada, este inicia sesion quedando su nombre guardado
 ; en el apartado de usuario logeado, caso contrario no se hace nada y se retorna el original.
 (define system-login (lambda (system User)
-                       (if (and (equal? (system-get-loggeduser system) (list)) (member User (system-get-userlist system)))
+                       (if (and (null? (system-get-loggeduser system)) (member User (system-get-userlist system)))
                            (list (system-get-name system) (system-get-initialchatbotid system)
                                  (system-get-chatbotlist system)
                                  (list (system-get-chatHistorylist system) (list (user User))) (system-get-actual system))
@@ -189,67 +191,8 @@
 ; Recorrido: system
 ; Recursión: ninguna
 ; Descripción: Esta funcion saca al usuario logeado del apartado de donde se guarda
-; la actual sesion y se retorna el system sin con ese apartado vacio.
+; la actual sesion y se retorna el system con ese apartado vacio.
 (define system-logout (lambda (system)
                         (list (system-get-name system) (system-get-initialchatbotid system)
                               (system-get-chatbotlist system)
                               (list (system-get-chatHistorylist system) (list)) (system-get-actual system))))
-
-; Nombre de la funcion: system-search-chatbot
-; Dominio: system X int
-; Recorrido: chatbot
-; Recursión: ninguna
-; Descripción: Esta funcion recibe un system y busca un chatbot en este, a partir del id entregado.
-(define system-search-chatbot (lambda (system id)
-                             (define system-buscar-chatbot-id (lambda (listachatbot id)
-                                                                (if (= (chatbot-get-id (car listachatbot)) id)
-                                                                    (car listachatbot)
-                                                                    (system-buscar-chatbot-id (cdr listachatbot) id))))
-                             (system-buscar-chatbot-id (system-get-chatbotlist system) id)))
-
-; Nombre de la funcion: system-search-flow
-; Dominio: chatbot X int
-; Recorrido: flow
-; Recursión: ninguna
-; Descripción: Esta funcion recibe un chatbot y busca un flow en este, a partir del id entregado.
-(define system-search-flow (lambda (chatbot id)
-                          (define system-buscar-flow-id (lambda (listaflow id)
-                                                          (if (= (flow-get-id (car listaflow)) id)
-                                                              (car listaflow)
-                                                              (system-buscar-flow-id (cdr listaflow) id))))
-                          (system-buscar-flow-id (chatbot-get-flows chatbot) id)))
-
-; Nombre de la funcion: system-search-option
-; Dominio: lista de opciones X string
-; Recorrido: option
-; Recursión: ninguna
-; Descripción: Esta funcion recibe una lista de opciones y busca un option en este, a partir de una keyword.
-(define system-search-option (lambda (listaoptions keyword)
-                            (if (or (equal? (string->number keyword) (option-get-id (car listaoptions))) (member keyword (map string-downcase (option-get-keywords (car listaoptions)))))
-                                (car listaoptions)
-                                (system-search-option (cdr listaoptions) keyword))))
-
-; Nombre de la funcion: system-search-coord
-; Dominio: system X sring
-; Recorrido: option
-; Recursión: ninguna
-; Descripción: Esta funcion recibe un system y busca un option en este, a partir de una keyword, dependiendo de la ultima interaccion
-; para saber cual es el chatbot y flujo actual de la conversacion.
-(define system-search-coord (lambda (system message)
-                           (system-search-option (flow-get-options (system-search-flow (system-search-chatbot system (car (system-get-actual system)))
-                                                                                 (cadr (system-get-actual system))))
-                                              message)))
-
-(define system-talk-rec(lambda (system message)
-                         (if (equal? (system-get-loggeduser system) (list))
-                             system
-                             (if (equal? (system-get-actual system) (list))
-                                 (list (system-get-name system) (system-get-initialchatbotid system)
-                                       (system-get-chatbotlist system)
-                                       (system-get-fourth system)
-                                       (list (system-get-initialchatbotid system)
-                                             (chatbot-get-startFlowId (system-search-chatbot system (system-get-initialchatbotid system))) message))
-                                 (list (system-get-name system) (system-get-initialchatbotid system)
-                                       (system-get-chatbotlist system)
-                                       (system-get-fourth system) (list (option-get-chatbotcodelink (system-search-coord system (string-downcase message)))
-                                                                        (option-get-initialflowcodelink (system-search-coord system (string-downcase message))) message))))))

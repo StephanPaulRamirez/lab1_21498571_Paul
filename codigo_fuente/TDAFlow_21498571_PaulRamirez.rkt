@@ -3,7 +3,7 @@
 ;Provee cada una de las definiciones al archivo que lo requiera
 (provide (all-defined-out))
 ;Incluimos TDAs implementados, funciones de utilidad y definiciones de prueba
-(require "TDA_Option_214985713_PaulRamirez.rkt")
+(require "TDAOption_21498571_PaulRamirez.rkt")
 
 ; TDA Flow
 ; especificación
@@ -13,7 +13,7 @@
 ; flow-get-id
 ; flow-get-msg
 ; flow-get-options
-; flow-add-options
+; flow-add-option
 
 ; implementacion
 
@@ -47,7 +47,7 @@
 ; Nombre de la funcion: flow
 ; Dominio: int X string X options*
 ; Recorrido: flow
-; Recursión: ninguna
+; Recursión: Cola a traves de flow-remove-envoltorio
 ; Descripción: Esta funcion enlista los primeros 2 parametros (el id y el mensaje)
 ;              con la lista de opciones luego de componerse con la funcion "flow-remove-dup-envoltorio"
 ;              con el fin de que solo se agreguen los option sin repetir id.
@@ -73,7 +73,7 @@
 ; Dominio: flow
 ; Recorrido: int
 ; Recursión: ninguna
-; Descripción: Esta funcion es sinonimo de caddr para obtener el primer elemento de flow.
+; Descripción: Esta funcion es sinonimo de car para obtener el primer elemento de flow.
 (define flow-get-id car)
 
 
@@ -81,7 +81,7 @@
 ; Dominio: flow
 ; Recorrido: string
 ; Recursión: ninguna
-; Descripción: Esta funcion es sinonimo de caddr para obtener el segundo elemento de flow.
+; Descripción: Esta funcion es sinonimo de cadr para obtener el segundo elemento de flow.
 (define flow-get-msg cadr)
 
 
@@ -97,7 +97,7 @@
 ; Nombre de la funcion: flow-add-option
 ; Dominio: flow X option
 ; Recorrido: flow
-; Recursión: De Cola a traves de check-dup-flow
+; Recursión: Ninguna
 ; Descripción: Esta funcion crea un nuevo flow con los 2 primeros elementos del flujo y la lista de
 ;              opciones con la opcion nueva, la cual se procesa con la funcion "check-dup-flow", para revisar
 ;              si efectivamente se agrega la nueva opcion o no (se verifican id duplicados).

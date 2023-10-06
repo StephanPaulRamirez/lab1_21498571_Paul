@@ -20,6 +20,6 @@
 ; Dominio: string
 ; Recorrido: user
 ; Recursión: ninguna
-; Descripción: Esta Funcion recibe un string como nombre y lo enlista.
+; Descripción: Esta Funcion recibe un string como nombre y devuelve un user.
 (define user (lambda (nombre) nombre))
 

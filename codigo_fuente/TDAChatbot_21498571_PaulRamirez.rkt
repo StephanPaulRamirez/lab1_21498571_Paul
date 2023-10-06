@@ -3,7 +3,7 @@
 ;Provee cada una de las definiciones al archivo que lo requiera
 (provide (all-defined-out))
 ;Incluimos TDAs implementados, funciones de utilidad y definiciones de prueba
-(require "TDA_Flow_214985713_PaulRamirez.rkt")
+(require "TDAFlow_21498571_PaulRamirez.rkt")
 
 ; TDA Chatbot
 ; especificación
@@ -23,7 +23,7 @@
 ; chatbotID (int) X name (String) X welcomeMessage (String) X startFlowId(int)  X  flows* (flow*)
 
 ; Nombre de la funcion: chatbot-remove-dup
-; Dominio: list X list X lista de flows
+; Dominio: lista vacia X lista vacia X lista de flows
 ; Recorrido: lista de flows
 ; Recursión: Cola 
 ; Descripción: Esta Funcion recibe las listas y revisa si hay flujos por agregar a result
@@ -45,7 +45,7 @@
 ; Dominio: int X string X string X int X flows* 
 ; Recorrido: chatbot
 ; Recursión: Cola a traves de chatbot-remove-dup
-; Descripción: Esta Funcion recibe los parammetros y los enlista pero los flows los enlista luego
+; Descripción: Esta Funcion recibe los parametros y los enlista pero los flows los enlista luego
 ; de procesarlos en la funcion chatbot-remove-dup para eliminar id duplicados (usando de parametro
 ; 2 listas vacias y los flows).
 (define chatbot (lambda (chatbotID name welcomeMessage startFlowId . flows)
@@ -101,7 +101,7 @@
 ; Recorrido: chatbot
 ; Recursión: Cola a traves de la funcion chatbot-remove-dup
 ; Descripción: Esta Funcion recibe un chatbot y un flow y crea un chatbot nuevo utilizando los mismos
-;elementos pero a la lista de flows se le agrega el nuevo flow usando la funcion chatbot-remove-dup.
+; elementos pero a la lista de flows se le agrega el nuevo flow usando la funcion chatbot-remove-dup.
 (define chatbot-add-flow (lambda (chatbot flow)
                (list (chatbot-get-id chatbot) (chatbot-get-name chatbot)
                      (chatbot-get-msg chatbot) (chatbot-get-startFlowId chatbot)

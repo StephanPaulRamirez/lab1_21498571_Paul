@@ -3,7 +3,7 @@
 ;Provee cada una de las definiciones al archivo que lo requiera
 (provide (all-defined-out))
 ;Incluimos TDAs implementados, funciones de utilidad y definiciones de prueba
-(require "TDA_User_214985713_PaulRamirez.rkt")
+(require "TDAUser_21498571_PaulRamirez.rkt")
 
 ; TDA ChatHistory
 ; especificación
@@ -21,12 +21,11 @@
 ; Constructor:
 
 ; Nombre de la funcion: chatHistory
-; Dominio: user
+; Dominio: user X string
 ; Recorrido: chatHistory
 ; Recursión: ninguna
-; Descripción: Esta Funcion recibe un usuario y lo enlista con una lista vacia en donde se agregaran
-; las interacciones.
-(define chatHistory (lambda (user) (list user (list))))
+; Descripción: Esta Funcion recibe un usuario y un string y los enlista.
+(define chatHistory (lambda (user string) (list user string)))
 
 ; Selectores:
 
@@ -39,7 +38,7 @@
 
 ; Nombre de la funcion: chatHistory-get-register
 ; Dominio: chatHistory
-; Recorrido: lista de interacciones
+; Recorrido: string
 ; Recursión: ninguna
 ; Descripción: Esta Funcion es sinonimo de cadr para obtener el segundo elemento de un chathistory.
 (define chatHistory-get-register cadr)
