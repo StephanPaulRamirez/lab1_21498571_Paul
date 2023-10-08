@@ -68,3 +68,15 @@
 ; Recursión: ninguna
 ; Descripción: Esta funcion es sinonimo de last para obtener las keywords.
 (define option-get-keywords last)
+
+; Otros:
+
+; Nombre de la funcion: system-search-option
+; Dominio: lista de opciones X string
+; Recorrido: option
+; Recursión: Cola
+; Descripción: Esta funcion recibe una lista de opciones y busca un option en este, a partir de una keyword.
+(define system-search-option (lambda (listaoptions keyword)
+                               (if (or (equal? (string->number keyword) (option-get-id (car listaoptions))) (member keyword (map string-downcase (option-get-keywords (car listaoptions)))))
+                                   (car listaoptions)
+                                   (system-search-option (cdr listaoptions) keyword))))

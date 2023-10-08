@@ -14,6 +14,7 @@
 ; flow-get-msg
 ; flow-get-options
 ; flow-add-option
+; system-get-options-msg
 
 ; implementacion
 
@@ -104,3 +105,18 @@
 (define flow-add-option (lambda (flow option)
                          (list (flow-get-id flow) (flow-get-msg flow)
                                (check-dup-flow (flow-get-options flow) option))))
+
+; Otros:
+
+; Nombre de la funcion: system-get-options-msg
+; Dominio: flow
+; Recorrido: string
+; Recursión: Cola
+; Descripción: Esta funcion recibe un flow y retorna a traves de una recursion que hace append
+; de los message de cada option el mensaje formateado
+(define system-get-options-msg (lambda (flow)
+                                 (define get-msg (lambda (result optionlist)
+                                                   (if (null? optionlist)
+                                                       result
+                                                       (get-msg (string-append result "\n" (option-get-msg (car optionlist))) (cdr optionlist)))))
+                                 (get-msg "\n" (flow-get-options flow))))

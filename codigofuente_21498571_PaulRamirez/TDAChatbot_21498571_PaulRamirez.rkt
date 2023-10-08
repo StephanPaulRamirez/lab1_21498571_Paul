@@ -15,7 +15,9 @@
 ; chatbot-get-msg
 ; chatbot-get-startFlowId
 ; chatbot-get-flows
+; system-search-flow
 ; chatbot-add-flow
+
 
 ; implementacion
 
@@ -93,6 +95,18 @@
 ; Descripción: Esta Funcion recibe un chatbot y le aplica un (car(cddddr()) con el fin de obtener
 ; el quinto elemento.
 (define chatbot-get-flows (lambda (chatbot) (car(cddddr chatbot))))
+
+; Nombre de la funcion: system-search-flow
+; Dominio: chatbot X int
+; Recorrido: flow
+; Recursión: Cola
+; Descripción: Esta funcion recibe un chatbot y busca un flow en este, a partir del id entregado.
+(define system-search-flow (lambda (chatbot id)
+                             (define system-buscar-flow-id (lambda (listaflow id)
+                                                             (if (= (flow-get-id (car listaflow)) id)
+                                                                 (car listaflow)
+                                                                 (system-buscar-flow-id (cdr listaflow) id))))
+                             (system-buscar-flow-id (chatbot-get-flows chatbot) id)))
 
 ; Modificador:
 
