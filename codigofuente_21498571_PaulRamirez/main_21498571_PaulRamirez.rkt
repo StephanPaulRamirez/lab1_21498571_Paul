@@ -23,7 +23,7 @@
 (define system-talk-rec(lambda (system message)
                          (if (null? (system-get-loggeduser system))
                              system
-                             (if (equal? (chatHistory-get-register (search-user (system-get-chatHistorylist system) (system-get-loggeduser system))) "")
+                             (if (null? (system-get-actual system))
                                  (list (system-get-name system) (system-get-initialchatbotid system)
                                        (system-get-chatbotlist system)
                                        (system-update-history system message)

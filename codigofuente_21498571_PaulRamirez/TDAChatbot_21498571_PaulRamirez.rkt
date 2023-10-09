@@ -25,7 +25,7 @@
 ; chatbotID (int) X name (String) X welcomeMessage (String) X startFlowId(int)  X  flows* (flow*)
 
 ; Nombre de la funcion: chatbot-remove-dup
-; Dominio: lista vacia X lista vacia X lista de flows
+; Dominio: list X list X lista de flows
 ; Recorrido: lista de flows
 ; Recursión: Cola 
 ; Descripción: Esta Funcion recibe las listas y revisa si hay flujos por agregar a result

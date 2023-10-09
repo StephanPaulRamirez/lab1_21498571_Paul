@@ -77,10 +77,8 @@ al mensaje enviado por el usuario, o para buscar
 el flow inicial si es que no habia una interaccion anterior.
 Tambien si es que no hay una sesion abierta, no hace nada.
 Sin embargo si es que se interactua con el chatbot
-sin ser la primera vez del usuario y anteriormente
-hubo otro usuario interactuando, este tiene que seguir
-esa conversacion, solo se reinicia la conversacion si el
-usuario es nuevo.
+sin ser la primera vez del usuario, este tendra que comenzar
+la conversacion de 0.
 
 - main system-talk-norec (0/1):
 No implementada

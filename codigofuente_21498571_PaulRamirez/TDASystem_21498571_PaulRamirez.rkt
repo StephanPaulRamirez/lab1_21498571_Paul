@@ -157,9 +157,9 @@
                                 (system-buscar-chatbot-id (system-get-chatbotlist system) id)))
 
 ; Nombre de la funcion: system-search-coord
-; Dominio: system X sring
+; Dominio: system X string
 ; Recorrido: option
-; Recursión: ninguna
+; Recursión: Cola a traves de los search
 ; Descripción: Esta funcion recibe un system y busca un option en este, a partir de una keyword, dependiendo de la ultima interaccion
 ; para saber cual es el chatbot y flujo actual de la conversacion.
 (define system-search-coord (lambda (system message)
@@ -218,11 +218,12 @@
 ; Recorrido: system
 ; Recursión: ninguna
 ; Descripción: Esta funcion saca al usuario logeado del apartado de donde se guarda
-; la actual sesion y se retorna el system con ese apartado vacio.
+; la actual sesion y se retorna el system con ese apartado vacio, junto con reiniciar la
+; interaccion actual.
 (define system-logout (lambda (system)
                         (list (system-get-name system) (system-get-initialchatbotid system)
                               (system-get-chatbotlist system)
-                              (list (system-get-chatHistorylist system) (list)) (system-get-actual system))))
+                              (list (system-get-chatHistorylist system) (list)) (list))))
 
 ; Nombre de la funcion: system-registerappendstring
 ; Dominio: system X string
@@ -232,7 +233,7 @@
 ; chatbot en base a las coordenadas de la opcion elegida, haciendo append de los mensajes
 ; del nuevo chatbot, flow y las opciones, de manera formateada para display
 (define system-registerappendstring (lambda (system message)
-                                      (if (equal? (chatHistory-get-register (search-user (system-get-chatHistorylist system) (system-get-loggeduser system))) "")
+                                      (if (null? (system-get-actual system))
                                           (string-append "\n" (number->string (current-seconds)) " - " (first (system-get-loggeduser system)) ": " message "\n"
                                                          (number->string (current-seconds)) " - " (chatbot-get-name (system-search-chatbot  system (system-get-initialchatbotid system)))
                                                          ": " (flow-get-msg (system-search-flow (system-search-chatbot system (system-get-initialchatbotid system))
@@ -260,7 +261,7 @@
 
 ; Nombre de la funcion: system-update-history
 ; Dominio: system X string
-; Recorrido: lista de la Lista de chatHistory's, con el usuario logeado
+; Recorrido: lista de la Lista de chatHistory's y lista de user
 ; Recursión: Cola a traves de search user y system-registerappendstring que contiene varias funciones search recursivas
 ; Descripción: Esta funcion recibe un system y un mensaje y dependiendo si es el primer mensaje o no,
 ; reconstruye el registro de los chatHistory y el usuario logeado agregando los ultimos 2 mensajes
@@ -268,7 +269,7 @@
 (define system-update-history (lambda (system message)
                                 (define notuser (lambda (chathistory)
                                                   (not (equal? (first (system-get-loggeduser system)) (first chathistory)))))
-                                (if (equal? (chatHistory-get-register (search-user (system-get-chatHistorylist system) (system-get-loggeduser system))) "")
+                                (if (null? (system-get-actual system))
                                     (cons (cons (chatHistory (first (system-get-loggeduser system)) (string-append (chatHistory-get-register (search-user (system-get-chatHistorylist system) (system-get-loggeduser system)))
                                                                                                                    (system-registerappendstring system message)
                                                                                                                    )
